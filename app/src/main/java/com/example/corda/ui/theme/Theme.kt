@@ -1,6 +1,5 @@
 package com.example.corda.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +32,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+//TODO add some default color scheme for the app, the default purple is ass
 @Composable
 fun CordaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

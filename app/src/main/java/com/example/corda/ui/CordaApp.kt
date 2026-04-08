@@ -57,7 +57,10 @@ fun CordaApp(
         }
     }
     val navigateBack: () -> Unit = {
-        backStack.removeLastOrNull()
+        scope.launch {
+            drawerState.close()
+            backStack.removeLastOrNull()
+        }
     }
 
     ModalNavigationDrawer(

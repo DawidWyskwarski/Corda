@@ -17,6 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * Screen for the inspirations (currently a skeleton).
+ *
+ * @param openDrawer lambda reporting an event to `CordaApp` to open a drawer
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InspirationsScreen(

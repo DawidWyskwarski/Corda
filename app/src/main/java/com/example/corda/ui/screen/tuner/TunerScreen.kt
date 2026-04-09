@@ -23,6 +23,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.corda.ui.components.NavigationPill
 
+/**
+ * Screen for the tuner.
+ *
+ * This screen serves as a "Reference Screen" for our UI architecture.
+ *
+ * ### TODO:
+ * - Implement real-time frequency analysis and pitch detection.
+ * - Add visual feedback for "In Tune" vs "Out of Tune" states.
+ *
+ * @param openDrawer lambda reporting an event to `CordaApp` to open a drawer
+ * @param openSettings lambda reporting an event to `CordaApp` to open the settings
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TunerScreen(
@@ -30,13 +42,17 @@ fun TunerScreen(
     openDrawer: () -> Unit,
     openSettings: () -> Unit
 ) {
+    // State for the ear mode toggle
     var isEarModeEnabled by remember{ mutableStateOf(false) }
 
+    // We use the Scaffold to handle the heavy lifting of Material Design layout,
+    // like placing the TopAppBar and managing window insets.
     Scaffold(
         modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
+                    // Custom component for the tuning selection
                     NavigationPill(
                         text = "A standard",
                         supportingText = "7 string guitar",
@@ -44,31 +60,24 @@ fun TunerScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = openDrawer
-                    ) {
-                        Icon(
-                            Icons.Rounded.Menu,
-                            null
-                        )
+                    IconButton(onClick = openDrawer) {
+                        Icon(Icons.Rounded.Menu, contentDescription = "Open drawer")
                     }
                 },
                 actions = {
                     IconToggleButton(
                         checked = isEarModeEnabled,
-                        onCheckedChange = {
-                            isEarModeEnabled = it
-                        }
+                        onCheckedChange = { isEarModeEnabled = it }
                     ) {
                         if (isEarModeEnabled) {
                             Icon(
                                 Icons.AutoMirrored.Rounded.VolumeUp,
-                                "Disable ear mode"
+                                contentDescription = "Disable ear mode"
                             )
                         } else {
                             Icon(
                                 Icons.AutoMirrored.Rounded.VolumeOff,
-                                "Enable ear mode"
+                                contentDescription = "Enable ear mode"
                             )
                         }
                     }
@@ -76,15 +85,14 @@ fun TunerScreen(
             )
         }
     ) { innerPadding ->
+        // innerPadding accounts for the top bar and system bars so your content doesn't get clipped!
         Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                "Tuner Screen"
-            )
+            Text("Tuner Screen")
         }
     }
 }

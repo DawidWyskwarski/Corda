@@ -31,6 +31,13 @@ private data class NavigationItem(
     val label: String,
     val screen: Screen
 )
+
+/**
+ * Contents of the drawer menu
+ *
+ * @param currentScreen The currently selected screen. Used to highlight the corresponding item.
+ * @param onScreenSelected Callback to invoke when a screen is selected.
+ */
 @Composable
 fun DrawerMenuContent(
     modifier: Modifier = Modifier,
@@ -81,6 +88,8 @@ fun DrawerMenuContent(
                 .padding(12.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // LOGO SECTION
+
             // Change later to something more interesting
             // Something with a logo for example
             Spacer(Modifier.height(12.dp))
@@ -91,6 +100,7 @@ fun DrawerMenuContent(
                 style = MaterialTheme.typography.headlineMedium
             )
 
+            // TOOLS SECTION
             Text(
                 text = "Tools",
                 style = MaterialTheme.typography.titleSmall,
@@ -119,6 +129,7 @@ fun DrawerMenuContent(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
+            // UTILITIES SECTION
             utilities.forEach { utility ->
                 NavigationDrawerItem(
                     icon = {

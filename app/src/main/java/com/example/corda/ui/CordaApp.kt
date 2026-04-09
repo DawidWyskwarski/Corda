@@ -21,6 +21,14 @@ import com.example.corda.ui.screen.tuner.TunerScreen
 import com.example.corda.ui.screen.tuner.settings.TunerSettingsScreen
 import kotlinx.coroutines.launch
 
+/**
+ * `CordaApp` - the root UI component of the app
+ *
+ * Mainly orchestrates the navigation between screens and the drawer menu.
+ *
+ * ### TODO
+ * - fix the transition animations. right now if i quickly double click on the back icon in settings the app goes back twice. (Need to block navigation after the click or something)
+ */
 @Composable
 fun CordaApp(
     modifier: Modifier = Modifier
@@ -28,26 +36,44 @@ fun CordaApp(
     // The default screen could be set in settings and later read from shared preferences
     // or something like that, so the user can choose which screen to start with
     val backStack = remember { mutableStateListOf<Screen>(Screen.Tuner) }
+
+    /**
+     * Some UI changes (like sliding a drawer) take some time
+     * and cannot be called directly on the main UI thread.
+     * They need to be launched inside a [kotlinx.coroutines.CoroutineScope]
+     */
     val scope = rememberCoroutineScope()
 
+    /**
+     * Holds a state whether a drawer is opened or closed
+     */
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
     val openDrawer: () -> Unit = {
         scope.launch {
             drawerState.open()
         }
     }
 
+    /**
+     * Custom Navigation Logic
+     * This function handles moving between main screens while preventing
+     * duplicate screens from piling up in the history.
+     */
     val navigateTo: (Screen) -> Unit = { screen ->
         scope.launch {
+            // if the screen is already open, close the drawer
             if (backStack.lastOrNull() == screen) {
                 drawerState.close()
                 return@launch
             }
 
+            // if we navigate to the starting screen we clear the backstack
             if (backStack.first() == screen) {
                 backStack.clear()
             }
 
+            // if the screen is already in the backstack, remove it
             if (backStack.find { it == screen } != null) {
                 backStack.remove(screen)
             }
@@ -56,6 +82,10 @@ fun CordaApp(
             drawerState.close()
         }
     }
+
+    /**
+     * Pops the last screen from the backstack and closes the drawer
+     */
     val navigateBack: () -> Unit = {
         scope.launch {
             drawerState.close()
@@ -63,9 +93,11 @@ fun CordaApp(
         }
     }
 
+    // Composable that provides the slide-out menu layout
     ModalNavigationDrawer(
         modifier = modifier,
         drawerState = drawerState,
+        // Disable the 'swipe-to-open' gesture unless the drawer is already open.
         // you can close it by swiping/clicking away,
         // but you can't swipe to open it
         gesturesEnabled = drawerState.isOpen,
@@ -76,6 +108,9 @@ fun CordaApp(
             )
         }
     ) {
+        // Composable that renders the current screen based on the backstack.
+        // entryProvider maps the Screen data object/class to a Composable function.
+        // For more information check out the Navigation3 documentation.
         NavDisplay(
             backStack = backStack,
             onBack = navigateBack,

@@ -18,6 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+/**
+ * Custom component for a navigation pill.
+ *
+ * @param text The text to display.
+ * @param supportingText Optional secondary text to display below the [text]
+ * @param onClick Callback to invoke when the pill is clicked.
+ */
 @Composable
 fun NavigationPill(
     modifier: Modifier = Modifier,
@@ -44,6 +51,7 @@ fun NavigationPill(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Main text
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleMedium,
@@ -51,6 +59,7 @@ fun NavigationPill(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                // if there is a supporting text, display it
                 if (supportingText.isNotEmpty()) {
                     Text(
                         text = supportingText,
@@ -62,6 +71,7 @@ fun NavigationPill(
                 }
             }
 
+            // Arrow icon suggesting navigation
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                 contentDescription = null,

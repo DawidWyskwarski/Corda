@@ -35,15 +35,16 @@ import com.example.corda.ui.components.FABMenu
 import com.example.corda.ui.components.FABMenuItem
 import com.example.corda.ui.components.SimpleSingleChoiceButtonGroup
 
-enum class TuningMode {
-    STANDARD,
-    CHROMATIC;
-
-    override fun toString(): String {
-        return name.lowercase().replaceFirstChar { it.uppercase() }
-    }
-}
-
+/**
+ * Screen for the tuner settings.
+ *
+ * ### TODO
+ * - Make the FAB menu do something
+ * - Add tunings to the list
+ * - Add filter chips
+ *
+ * @param onBack lambda reporting an event to `CordaApp` to go back
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TunerSettingsScreen(
@@ -51,28 +52,29 @@ fun TunerSettingsScreen(
     onBack: () -> Unit,
 ) {
     var selectedMode by remember { mutableStateOf(TuningMode.STANDARD) }
-    val modes = listOf(
-        TuningMode.STANDARD,
-        TuningMode.CHROMATIC
-    )
 
+    val modes = TuningMode.entries.toList()
+
+    // State of the search bar
     var searchQuery by remember { mutableStateOf("") }
 
+    // State of the FAB menu (Opened or closed)
     var isFabMenuOpen by remember { mutableStateOf(false) }
 
     val fabMenuItems = listOf(
         FABMenuItem(
             Icons.AutoMirrored.Rounded.QueueMusic,
             "New custom tuning",
-            { isFabMenuOpen = false } // TODO change this to actually do things
+            { isFabMenuOpen = false }
         ),
         FABMenuItem(
             Icons.Rounded.Piano,
             "Manage Instruments",
-            { isFabMenuOpen = false } // TODO change this to actually do things
+            { isFabMenuOpen = false }
         )
     )
 
+    // If the FAB menu is open, close it when the back button is pressed
     BackHandler(isFabMenuOpen) { isFabMenuOpen = false }
 
     Scaffold(
@@ -115,6 +117,7 @@ fun TunerSettingsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            // Custom component for the tuning mode selection
             SimpleSingleChoiceButtonGroup(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -126,6 +129,7 @@ fun TunerSettingsScreen(
             )
 
             if (selectedMode == TuningMode.CHROMATIC) {
+                // If the chromatic mode is selected, we just show a message
                 Column(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -144,6 +148,7 @@ fun TunerSettingsScreen(
                     )
                 }
             } else {
+                // If the standard mode is selected, we show a search bar and a list of tunings (tba)
                 Text(
                     modifier = Modifier.padding(top = 16.dp),
                     text = "Tunings",

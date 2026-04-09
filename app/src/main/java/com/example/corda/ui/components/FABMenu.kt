@@ -51,6 +51,17 @@ data class FABMenuItem(
     val onClick: () -> Unit,
 )
 
+/**
+ * Custom component for a floating action button menu.
+ *
+ * ### TODO
+ * - add documentation (yes i stole the code from the official docs)
+ * - move the isExpanded Box to the TunerSettingsScreen to eliminate the weird gap
+ *
+ * @param isExpanded Whether the menu is expanded.
+ * @param onExpandedChange Callback to invoke when the menu is expanded or collapsed.
+ * @param items The list of menu items.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FABMenu(

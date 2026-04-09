@@ -14,6 +14,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 
+/**
+ * Generic component for a simple single choice button group.
+ *
+ * @param selectedItem The currently selected item.
+ * @param onItemSelected Callback to invoke when an item is selected.
+ * @param items The list of items to display.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T> SimpleSingleChoiceButtonGroup(
@@ -37,6 +44,7 @@ fun <T> SimpleSingleChoiceButtonGroup(
                     onItemSelected(item)
                 },
                 shapes =
+                    // Choose different shapes based on the index of the item
                     when (index) {
                         0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                         items.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()

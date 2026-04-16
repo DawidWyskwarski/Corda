@@ -66,4 +66,7 @@ dependencies {
 
     // Icons :)
     implementation(libs.androidx.compose.material.icons.extended)
+
+    // TarsosDSP
+    implementation(libs.tarsos.core)
 }

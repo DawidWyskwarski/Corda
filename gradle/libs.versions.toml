@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.0"
+tarsosCore = "2.5"
 coreKtx = "1.18.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -17,6 +18,7 @@ material3AdaptiveNav3 = "1.3.0-alpha09"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" } # Kotlin extensions for Android APIs
+tarsos-core = { module = "be.tarsos.dsp:core", version.ref = "tarsosCore" } # Core TarsosDSP library for sound processing
 junit = { group = "junit", name = "junit", version.ref = "junit" } # Standard unit testing framework
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" } # JUnit extensions for Android tests
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" } # UI testing framework

@@ -4,9 +4,12 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -55,31 +58,44 @@ fun CordaApp(
         }
     }
 
+    var lastNavTime by remember { mutableLongStateOf(0L) }
+
+    // Helper to debounce rapid clicks
+    val canNavigate = {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastNavTime > 400) { // 400ms debounce window
+            lastNavTime = currentTime
+            true
+        } else {
+            false
+        }
+    }
+
     /**
      * Custom Navigation Logic
      * This function handles moving between main screens while preventing
      * duplicate screens from piling up in the history.
      */
     val navigateTo: (Screen) -> Unit = { screen ->
-        scope.launch {
-            // if the screen is already open, close the drawer
-            if (backStack.lastOrNull() == screen) {
+        // Prevent double-clicking on navigation items too
+        if (canNavigate()) {
+            scope.launch {
+                if (backStack.lastOrNull() == screen) {
+                    drawerState.close()
+                    return@launch
+                }
+
+                if (backStack.first() == screen) {
+                    backStack.clear()
+                }
+
+                if (backStack.find { it == screen } != null) {
+                    backStack.remove(screen)
+                }
+
+                backStack.add(screen)
                 drawerState.close()
-                return@launch
             }
-
-            // if we navigate to the starting screen we clear the backstack
-            if (backStack.first() == screen) {
-                backStack.clear()
-            }
-
-            // if the screen is already in the backstack, remove it
-            if (backStack.find { it == screen } != null) {
-                backStack.remove(screen)
-            }
-
-            backStack.add(screen)
-            drawerState.close()
         }
     }
 
@@ -87,9 +103,11 @@ fun CordaApp(
      * Pops the last screen from the backstack and closes the drawer
      */
     val navigateBack: () -> Unit = {
-        scope.launch {
-            drawerState.close()
-            backStack.removeLastOrNull()
+        if (canNavigate()) {
+            scope.launch {
+                drawerState.close()
+                backStack.removeLastOrNull()
+            }
         }
     }
 

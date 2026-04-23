@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.0"
+agp = "9.1.1"
 tarsosCore = "2.5"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -13,8 +13,8 @@ material3 = "1.5.0-alpha17"
 nav3Core = "1.1.0"
 lifecycleViewmodelNav3 = "2.11.0-alpha03"
 kotlinSerialization = "2.3.20"
-kotlinxSerializationCore = "1.10.0"
-material3AdaptiveNav3 = "1.3.0-alpha09"
+kotlinxSerializationCore = "1.11.0"
+material3AdaptiveNav3 = "1.3.0-alpha10"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" } # Kotlin extensions for Android APIs

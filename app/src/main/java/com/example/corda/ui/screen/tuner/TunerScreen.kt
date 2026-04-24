@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.corda.ui.components.NavigationPill
 
 /**
@@ -38,10 +39,12 @@ import com.example.corda.ui.components.NavigationPill
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TunerScreen(
+    viewModel: TunerViewModel,
     modifier: Modifier = Modifier,
     openDrawer: () -> Unit,
     openSettings: () -> Unit
 ) {
+    val selectedTuning by viewModel.selectedTuning.collectAsStateWithLifecycle()
     // State for the ear mode toggle
     var isEarModeEnabled by remember{ mutableStateOf(false) }
 
@@ -54,8 +57,8 @@ fun TunerScreen(
                 title = {
                     // Custom component for the tuning selection
                     NavigationPill(
-                        text = "A standard",
-                        supportingText = "7 string guitar",
+                        text = selectedTuning.name,
+                        supportingText = selectedTuning.instrument,
                         onClick = openSettings
                     )
                 },

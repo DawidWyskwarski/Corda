@@ -11,7 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.corda.ui.components.DrawerMenuContent
 import com.example.corda.ui.navigation.Screen
@@ -21,6 +24,7 @@ import com.example.corda.ui.screen.metronome.MetronomeScreen
 import com.example.corda.ui.screen.metronome.settings.MetronomeSettingsScreen
 import com.example.corda.ui.screen.settings.SettingsScreen
 import com.example.corda.ui.screen.tuner.TunerScreen
+import com.example.corda.ui.screen.tuner.TunerViewModel
 import com.example.corda.ui.screen.tuner.settings.TunerSettingsScreen
 import kotlinx.coroutines.launch
 
@@ -34,7 +38,8 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun CordaApp(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tunerViewModel: TunerViewModel = viewModel()
 ) {
     // The default screen could be set in settings and later read from shared preferences
     // or something like that, so the user can choose which screen to start with
@@ -132,15 +137,21 @@ fun CordaApp(
         NavDisplay(
             backStack = backStack,
             onBack = navigateBack,
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
             entryProvider = entryProvider {
                 entry<Screen.Tuner> {
                     TunerScreen(
+                        viewModel = tunerViewModel,
                         openDrawer = openDrawer,
                         openSettings = { navigateTo(Screen.TunerSettings) }
                     )
                 }
                 entry<Screen.TunerSettings> {
                     TunerSettingsScreen(
+                        viewModel = tunerViewModel,
                         onBack = navigateBack
                     )
                 }

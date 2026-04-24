@@ -1,6 +1,7 @@
 package com.example.corda.ui.screen.tuner
 
 import androidx.lifecycle.ViewModel
+import com.example.corda.ui.screen.tuner.settings.TuningMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +33,14 @@ class TunerViewModel : ViewModel() {
     private val _selectedTuning = MutableStateFlow(tunings.first())
     val selectedTuning: StateFlow<DummyTuning> = _selectedTuning.asStateFlow()
 
+    private val _selectedMode = MutableStateFlow(TuningMode.STANDARD)
+    val selectedMode: StateFlow<TuningMode> = _selectedMode.asStateFlow()
+
     fun selectTuning(tuning: DummyTuning) {
         _selectedTuning.value = tuning
+    }
+
+    fun selectMode(mode: TuningMode) {
+        _selectedMode.value = mode
     }
 }

@@ -3,14 +3,8 @@ package com.example.corda.ui.screen.tuner.settings
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -32,7 +26,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Piano
 import androidx.compose.material.icons.rounded.Search
@@ -43,12 +36,10 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -58,16 +49,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.corda.ui.components.FABMenu
 import com.example.corda.ui.components.FABMenuItem
 import com.example.corda.ui.components.SimpleSingleChoiceButtonGroup
-import com.example.corda.ui.screen.tuner.DummyTuning
 import com.example.corda.ui.screen.tuner.TunerViewModel
+import com.example.corda.ui.components.TuningListItem
 
 /**
  * Screen for the tuner settings.
@@ -87,7 +76,8 @@ fun TunerSettingsScreen(
 ) {
     val selectedTuning by viewModel.selectedTuning.collectAsStateWithLifecycle()
 
-    var selectedMode by remember { mutableStateOf(TuningMode.STANDARD) }
+    val selectedMode by viewModel.selectedMode.collectAsStateWithLifecycle()
+    
     val modes = TuningMode.entries.toList()
 
     // Search bar state
@@ -118,14 +108,12 @@ fun TunerSettingsScreen(
     val fabMenuItems = listOf(
         FABMenuItem(
             Icons.AutoMirrored.Rounded.QueueMusic,
-            "New custom tuning",
-            { isFabMenuOpen = false }
-        ),
+            "New custom tuning"
+        ) { isFabMenuOpen = false },
         FABMenuItem(
             Icons.Rounded.Piano,
-            "Manage Instruments",
-            { isFabMenuOpen = false }
-        )
+            "Manage Instruments"
+        ) { isFabMenuOpen = false }
     )
 
     // Close FAB menu on back press when open
@@ -173,7 +161,7 @@ fun TunerSettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 selectedItem = selectedMode,
                 items = modes,
-                onItemSelected = { selectedMode = it }
+                onItemSelected = { viewModel.selectMode(it) }
             )
 
             AnimatedContent(
@@ -198,7 +186,6 @@ fun TunerSettingsScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
 
-                            // ── Search bar ──────────────────────────────────────────
                             SearchBar(
                                 modifier = Modifier.fillMaxWidth(),
                                 windowInsets = WindowInsets(top = 0.dp),
@@ -231,12 +218,10 @@ fun TunerSettingsScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            // ── Instrument filter chips ─────────────────────────────
                             LazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(horizontal = 2.dp),
                             ) {
-                                // "All" chip
                                 item(key = "chip_all") {
                                     val isAllSelected = selectedInstrument == null
                                     FilterChip(
@@ -250,7 +235,6 @@ fun TunerSettingsScreen(
                                     )
                                 }
 
-                                // One chip per instrument
                                 items(items = instruments, key = { "chip_$it" }) { instrument ->
                                     val isSelected = selectedInstrument == instrument
                                     FilterChip(
@@ -270,7 +254,6 @@ fun TunerSettingsScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            // ── Tuning list ─────────────────────────────────────────
                             if (filteredTunings.isEmpty()) {
                                 Box(
                                     modifier = Modifier
@@ -334,82 +317,3 @@ fun TunerSettingsScreen(
         }
     }
 }
-
-/**
- * A single row in the tunings list.
- *
- * Visual anatomy:
- * - Overline  : instrument name (e.g. "Guitar") — contextual label above the headline
- * - Headline  : tuning name (e.g. "Drop D")
- * - Supporting: note string preview (e.g. "D2 A2 D3 G3 B3 E4")
- * - Trailing  : animated check-circle when this tuning is selected
- */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun TuningListItem(
-    tuning: DummyTuning,
-    shapes: ListItemShapes,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val containerColor by animateColorAsState(
-        targetValue = if (isSelected)
-            MaterialTheme.colorScheme.secondaryContainer
-        else
-            MaterialTheme.colorScheme.surfaceContainer,
-        label = "TuningListItem container color",
-    )
-
-    SegmentedListItem(
-        onClick = onClick,
-        shapes = shapes,
-        modifier = modifier.animateContentSize(),
-        colors = ListItemDefaults.colors(containerColor = containerColor),
-        overlineContent = {
-            Text(
-                text = tuning.instrument,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        supportingContent = {
-            Text(
-                text = tuning.sounds.joinToString(" "),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        trailingContent = {
-            AnimatedVisibility(
-                visible = isSelected,
-                enter = scaleIn(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioHighBouncy,
-                        stiffness = Spring.StiffnessMedium,
-                    )
-                ) + fadeIn(),
-                exit = scaleOut() + fadeOut(),
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.CheckCircle,
-                    contentDescription = "Selected",
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
-        },
-    ) {
-        Text(
-            text = tuning.name,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-

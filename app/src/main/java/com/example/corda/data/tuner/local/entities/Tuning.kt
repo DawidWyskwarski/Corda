@@ -1,0 +1,23 @@
+package com.example.corda.data.tuner.local.entities
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = Instrument::class,
+            parentColumns = ["id"],
+            childColumns = ["instrument_id"]
+        )
+    ]
+)
+data class Tuning(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    var name: String,
+    @ColumnInfo(name = "instrument_id")
+    val instrumentId: Int
+)

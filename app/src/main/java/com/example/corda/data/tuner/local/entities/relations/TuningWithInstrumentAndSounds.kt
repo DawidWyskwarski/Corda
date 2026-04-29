@@ -1,16 +1,18 @@
 package com.example.corda.data.tuner.local.entities.relations
 
-import androidx.room.Embedded
+import androidx.room.ColumnInfo
 import androidx.room.Junction
 import androidx.room.Relation
 import com.example.corda.data.tuner.local.entities.Sound
-import com.example.corda.data.tuner.local.entities.Tuning
 
-data class TuningWithSounds (
-    @Embedded val tuning: Tuning,
+data class TuningWithInstrumentAndSounds (
+    @ColumnInfo(name = "tuning_id")
+    val tuningId: Int,
+    val tuningName: String,
+    val instrumentName: String,
     @Relation(
-        parentColumn = "tuningId",
-        entityColumn = "soundId",
+        parentColumn = "tuning_id",
+        entityColumn = "sound_id",
         associateBy = Junction(TuningSoundCrossRef::class)
     )
     val sounds: List<Sound>

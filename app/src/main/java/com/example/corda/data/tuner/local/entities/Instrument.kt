@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Instrument(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @ColumnInfo(name = "instrument_id")
+    val instrumentId: Int = 0,
     var name: String,
     @ColumnInfo(name = "sounds_count")
     val soundsCount: Byte

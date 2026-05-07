@@ -58,8 +58,8 @@ class TunerRepository(
     }
 
     // Sound
-    suspend fun getReferencePitch(): Result<Sound> = withContext(dispatcher) {
-        runCatching { dao.getReferencePitch() }
+    suspend fun getReferencePitch(): Sound = withContext(dispatcher) {
+        dao.getReferencePitch()
     }
 
     suspend fun updateSound(vararg sound: Sound): Result<Unit> = withContext(dispatcher) {

@@ -20,6 +20,7 @@ fun FilterChipGroup(
     onItemSelected: (String?) -> Unit
 ) {
     LazyRow(
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {

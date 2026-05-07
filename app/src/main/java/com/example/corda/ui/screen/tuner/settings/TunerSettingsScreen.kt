@@ -9,7 +9,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -43,9 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.corda.ui.components.FABMenu
@@ -53,6 +50,7 @@ import com.example.corda.ui.components.FABMenuItem
 import com.example.corda.ui.components.FilterChipGroup
 import com.example.corda.ui.components.SimpleSingleChoiceButtonGroup
 import com.example.corda.ui.components.TuningListItem
+import com.example.corda.ui.components.UserInfo
 import com.example.corda.ui.screen.tuner.TunerViewModel
 
 /**
@@ -71,9 +69,7 @@ fun TunerSettingsScreen(
     onBack: () -> Unit,
 ) {
     val selectedMode by viewModel.selectedMode.collectAsStateWithLifecycle()
-
     val modes = remember { TuningMode.entries.toList() }
-
     var isFabMenuOpen by remember { mutableStateOf(false) }
 
     val fabMenuItems = remember {
@@ -85,13 +81,13 @@ fun TunerSettingsScreen(
         )
     }
 
+    val navigateBack = {
+        viewModel.updateSelectedTuningLastUsed()
+        onBack()
+    }
+
     BackHandler {
-        if (isFabMenuOpen) {
-            isFabMenuOpen = false
-        } else {
-            viewModel.updateSelectedTuningLastUsed()
-            onBack()
-        }
+        if (isFabMenuOpen) isFabMenuOpen = false else navigateBack()
     }
 
     Scaffold(
@@ -100,10 +96,7 @@ fun TunerSettingsScreen(
             TopAppBar(
                 title = { Text("Tuner Settings") },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        viewModel.updateSelectedTuningLastUsed()
-                        onBack()
-                    }) {
+                    IconButton(onClick = navigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
                     }
                 }
@@ -178,69 +171,62 @@ private fun TuningsContent(
     val count by remember { derivedStateOf { filteredTunings.size } }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Text(
-            modifier = Modifier.padding(vertical = 8.dp),
-            text = "Tunings",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
 
-        SearchBar(
-            modifier = Modifier.fillMaxWidth(),
-            windowInsets = WindowInsets(top = 0.dp),
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = searchQuery,
-                    onQueryChange = { viewModel.setSearchQuery(it) },
-                    onSearch = { },
-                    expanded = false,
-                    onExpandedChange = { },
-                    placeholder = { Text("Search tunings") },
-                    leadingIcon = {
-                        Icon(Icons.Rounded.Search, contentDescription = null)
-                    },
-                    trailingIcon = {
-                        if (searchQuery.isNotEmpty()) {
-                            IconButton(onClick = { viewModel.setSearchQuery("") }) {
-                                Icon(Icons.Rounded.Close, contentDescription = "Clear search")
-                            }
-                        }
-                    },
-                )
-            },
-            expanded = false,
-            onExpandedChange = { },
-        ) {}
+        if (filteredTunings.isEmpty() && selectedTuning == null) {
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        FilterChipGroup(
-            items = instruments.map { it.name },
-            selectedItem = selectedInstrument,
-            onItemSelected = { viewModel.setSelectedInstrument(it) }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (filteredTunings.isEmpty()) {
-            Box(
+            UserInfo(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = if (searchQuery.isEmpty() && selectedInstrument == null) {
-                        "No tunings available.\nTap + to add one."
-                    } else {
-                        "No tunings match your search."
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
-            }
+                    .fillMaxSize(),
+                mainText = "No tunings found",
+                supportingText = "Tap + to add the one want"
+            )
+
         } else {
+
+            Text(
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = "Tunings",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            SearchBar(
+                modifier = Modifier.fillMaxWidth(),
+                windowInsets = WindowInsets(top = 0.dp),
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        query = searchQuery,
+                        onQueryChange = { viewModel.setSearchQuery(it) },
+                        onSearch = { },
+                        expanded = false,
+                        onExpandedChange = { },
+                        placeholder = { Text("Search tunings") },
+                        leadingIcon = {
+                            Icon(Icons.Rounded.Search, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { viewModel.setSearchQuery("") }) {
+                                    Icon(Icons.Rounded.Close, contentDescription = "Clear search")
+                                }
+                            }
+                        },
+                    )
+                },
+                expanded = false,
+                onExpandedChange = { },
+            ) {}
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FilterChipGroup(
+                items = instruments.map { it.name },
+                selectedItem = selectedInstrument,
+                onItemSelected = { viewModel.setSelectedInstrument(it) }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -267,20 +253,13 @@ private fun TuningsContent(
 }
 
 @Composable
-private fun ChromaticContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Chromatic mode detects the note automatically.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "No need to select a tuning.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+private fun ChromaticContent(
+    modifier: Modifier = Modifier
+) {
+    UserInfo(
+        modifier = modifier
+            .fillMaxSize(),
+        mainText = "Chromatic mode detects the note automatically",
+        supportingText = "No need to select a tuning"
+    )
 }

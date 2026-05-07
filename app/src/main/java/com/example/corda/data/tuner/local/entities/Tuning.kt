@@ -20,5 +20,7 @@ data class Tuning(
     val tuningId: Int = 0,
     var name: String,
     @ColumnInfo(name = "instrument_id")
-    val instrumentId: Int
+    val instrumentId: Int,
+    @ColumnInfo(name = "last_used")
+    val lastUsed: Long = 0L
 )

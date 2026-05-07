@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class TunerViewModel(
     private val repository: TunerRepository
@@ -81,6 +82,15 @@ class TunerViewModel(
 
     fun selectTuning(tuning: TuningWithInstrumentAndSounds) {
         _selectedTuning.value = tuning
+    }
+
+    fun updateSelectedTuningLastUsed() {
+        val currentTuning = _selectedTuning.value ?: tunings.value.firstOrNull()
+        currentTuning?.let { tuning ->
+            viewModelScope.launch {
+                repository.updateTuningLastUsed(tuning.tuningId, System.currentTimeMillis())
+            }
+        }
     }
 
     private val _selectedMode = MutableStateFlow(TuningMode.STANDARD)

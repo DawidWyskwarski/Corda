@@ -68,11 +68,16 @@ interface TunerDao {
         SELECT 
             Tuning.tuning_id,
             Tuning.name AS tuningName,
-            Instrument.name AS instrumentName
+            Instrument.name AS instrumentName,
+            Tuning.last_used
         FROM Tuning
         INNER JOIN Instrument ON Tuning.instrument_id = Instrument.instrument_id
+        ORDER BY Tuning.last_used DESC
     """)
     fun getTunings(): Flow<List<TuningWithInstrumentAndSounds>>
+
+    @Query("UPDATE Tuning SET last_used = :timestamp WHERE tuning_id = :tuningId")
+    suspend fun updateTuningLastUsed(tuningId: Int, timestamp: Long)
 
     @Query("""
         SELECT * 

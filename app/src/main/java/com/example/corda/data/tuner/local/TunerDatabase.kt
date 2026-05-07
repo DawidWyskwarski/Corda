@@ -122,6 +122,7 @@ abstract class TunerDatabase : RoomDatabase() {
             val tuningId = db.insert("Tuning", 0, ContentValues().apply {
                 put("name", name)
                 put("instrument_id", instrumentId)
+                put("last_used", 0L)
             })
 
             noteNames.forEach { noteName ->

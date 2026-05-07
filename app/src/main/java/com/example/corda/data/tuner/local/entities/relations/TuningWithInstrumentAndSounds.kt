@@ -10,6 +10,8 @@ data class TuningWithInstrumentAndSounds (
     val tuningId: Int,
     val tuningName: String,
     val instrumentName: String,
+    @ColumnInfo(name = "last_used")
+    val lastUsed: Long,
     @Relation(
         parentColumn = "tuning_id",
         entityColumn = "sound_id",

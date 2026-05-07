@@ -85,7 +85,14 @@ fun TunerSettingsScreen(
         )
     }
 
-    BackHandler(isFabMenuOpen) { isFabMenuOpen = false }
+    BackHandler {
+        if (isFabMenuOpen) {
+            isFabMenuOpen = false
+        } else {
+            viewModel.updateSelectedTuningLastUsed()
+            onBack()
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -93,7 +100,10 @@ fun TunerSettingsScreen(
             TopAppBar(
                 title = { Text("Tuner Settings") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        viewModel.updateSelectedTuningLastUsed()
+                        onBack()
+                    }) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
                     }
                 }
@@ -247,7 +257,7 @@ private fun TuningsContent(
                             index = index,
                             count = count
                         ),
-                        isSelected = tuning == selectedTuning,
+                        isSelected = tuning.tuningId == selectedTuning?.tuningId,
                         onClick = { viewModel.selectTuning(tuning) },
                     )
                 }

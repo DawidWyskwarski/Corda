@@ -49,6 +49,10 @@ class TunerRepository(
         runCatching { dao.updateTuning(*tuning) }
     }
 
+    suspend fun updateTuningLastUsed(tuningId: Int, timestamp: Long): Result<Unit> = withContext(dispatcher) {
+        runCatching { dao.updateTuningLastUsed(tuningId, timestamp) }
+    }
+
     suspend fun deleteTuning(vararg tuning: Tuning): Result<Unit> = withContext(dispatcher) {
         runCatching { dao.deleteTuning(*tuning) }
     }

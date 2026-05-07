@@ -12,6 +12,7 @@ import com.example.corda.data.tuner.local.entities.Sound
 import com.example.corda.data.tuner.local.entities.Tuning
 import com.example.corda.data.tuner.local.entities.relations.TuningSoundCrossRef
 import com.example.corda.data.tuner.local.entities.relations.TuningWithInstrumentAndSounds
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TunerDao {
@@ -60,7 +61,7 @@ interface TunerDao {
         SELECT * 
         FROM Instrument
         """)
-    suspend fun getInstruments(): List<Instrument>
+    fun getInstruments(): Flow<List<Instrument>>
 
     @Transaction
     @Query("""
@@ -70,9 +71,8 @@ interface TunerDao {
             Instrument.name AS instrumentName
         FROM Tuning
         INNER JOIN Instrument ON Tuning.instrument_id = Instrument.instrument_id
-        INNER JOIN TuningSoundCrossRef ON Tuning.tuning_id = TuningSoundCrossRef.tuning_id
     """)
-    suspend fun getTunings(): List<TuningWithInstrumentAndSounds>
+    fun getTunings(): Flow<List<TuningWithInstrumentAndSounds>>
 
     @Query("""
         SELECT * 
@@ -80,4 +80,15 @@ interface TunerDao {
         WHERE Sound.name = "A4"
         """)
     suspend fun getReferencePitch(): Sound
+
+    @Transaction
+    suspend fun insertTuningWithSounds(tuning: Tuning, sounds: List<Sound>) {
+        val tuningId = insertTuning(tuning)
+        sounds.forEach { sound ->
+            val soundId = insertSound(sound)
+            insertTuningSoundCrossRef(
+                TuningSoundCrossRef(tuningId = tuningId.toInt(), soundId = soundId.toInt())
+            )
+        }
+    }
 }

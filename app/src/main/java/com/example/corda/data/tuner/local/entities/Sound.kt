@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class Sound (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "sound_id")
-    val soundId: Int,
+    val soundId: Int = 0,
     val name: String,
     var frequency: Float
 )

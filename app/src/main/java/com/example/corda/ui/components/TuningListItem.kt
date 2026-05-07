@@ -2,7 +2,6 @@ package com.example.corda.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -23,7 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.corda.ui.screen.tuner.DummyTuning
+import androidx.compose.runtime.remember
+import com.example.corda.data.tuner.local.entities.relations.TuningWithInstrumentAndSounds
 
 /**
  * A single row in the tunings list.
@@ -37,7 +37,7 @@ import com.example.corda.ui.screen.tuner.DummyTuning
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TuningListItem(
-    tuning: DummyTuning,
+    tuning: TuningWithInstrumentAndSounds,
     shapes: ListItemShapes,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -51,14 +51,18 @@ fun TuningListItem(
         label = "TuningListItem container color",
     )
 
+    val notesText = remember(tuning.sounds) {
+        tuning.sounds.joinToString(" ") { it.name }
+    }
+
     SegmentedListItem(
         onClick = onClick,
         shapes = shapes,
-        modifier = modifier.animateContentSize(),
+        modifier = modifier,
         colors = ListItemDefaults.colors(containerColor = containerColor),
         overlineContent = {
             Text(
-                text = tuning.instrument,
+                text = tuning.instrumentName,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -67,7 +71,7 @@ fun TuningListItem(
         },
         supportingContent = {
             Text(
-                text = tuning.sounds.joinToString(" "),
+                text = notesText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -79,7 +83,7 @@ fun TuningListItem(
                 visible = isSelected,
                 enter = scaleIn(
                     animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioHighBouncy,
+                        dampingRatio = Spring.DampingRatioLowBouncy,
                         stiffness = Spring.StiffnessMedium,
                     )
                 ) + fadeIn(),
@@ -94,7 +98,7 @@ fun TuningListItem(
         },
     ) {
         Text(
-            text = tuning.name,
+            text = tuning.tuningName,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             maxLines = 1,

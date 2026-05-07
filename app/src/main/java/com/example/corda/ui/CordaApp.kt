@@ -25,6 +25,7 @@ import com.example.corda.ui.screen.metronome.settings.MetronomeSettingsScreen
 import com.example.corda.ui.screen.settings.SettingsScreen
 import com.example.corda.ui.screen.tuner.TunerScreen
 import com.example.corda.ui.screen.tuner.TunerViewModel
+import com.example.corda.ui.screen.tuner.TunerViewModelFactory
 import com.example.corda.ui.screen.tuner.settings.TunerSettingsScreen
 import kotlinx.coroutines.launch
 
@@ -39,8 +40,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun CordaApp(
     modifier: Modifier = Modifier,
-    tunerViewModel: TunerViewModel = viewModel()
+    tunerViewModelFactory: TunerViewModelFactory
 ) {
+    val tunerViewModel: TunerViewModel = viewModel(factory = tunerViewModelFactory)
+
     // The default screen could be set in settings and later read from shared preferences
     // or something like that, so the user can choose which screen to start with
     val backStack = remember { mutableStateListOf<Screen>(Screen.Tuner) }

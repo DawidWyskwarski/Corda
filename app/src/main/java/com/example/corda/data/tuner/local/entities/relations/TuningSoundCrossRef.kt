@@ -24,7 +24,7 @@ import com.example.corda.data.tuner.local.entities.Tuning
 )
 data class TuningSoundCrossRef(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "tuning_id")
     val tuningId: Int,
     @ColumnInfo(name = "sound_id")

@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.data.tuner.local.entities.Sound
 import com.example.corda.ui.components.NavigationPill
 import com.example.corda.ui.components.PitchArc
 import com.example.corda.ui.components.TuningNoteChip
@@ -73,48 +74,52 @@ fun TunerScreen(
     val selectedTuning by viewModel.selectedTuning.collectAsStateWithLifecycle()
     val selectedMode by viewModel.selectedMode.collectAsStateWithLifecycle()
 
-    // State for the ear mode toggle
     var isEarModeEnabled by remember { mutableStateOf(false) }
 
-    // We use the Scaffold to handle the heavy lifting of Material Design layout,
-    // like placing the TopAppBar and managing window insets.
     Scaffold(
-        modifier = modifier, topBar = {
-            CenterAlignedTopAppBar(title = {
-                // Custom component for the tuning selection
-                NavigationPill(
-                    text = if (selectedMode == TuningMode.STANDARD) {
-                        selectedTuning.name
-                    } else {
-                        "Chromatic Mode"
-                    }, supportingText = if (selectedMode == TuningMode.STANDARD) {
-                        selectedTuning.instrument
-                    } else {
-                        ""
-                    }, onClick = openSettings
-                )
-            }, navigationIcon = {
-                IconButton(onClick = openDrawer) {
-                    Icon(Icons.Rounded.Menu, contentDescription = "Open drawer")
-                }
-            }, actions = {
-                IconToggleButton(
-                    checked = isEarModeEnabled, onCheckedChange = { isEarModeEnabled = it }) {
-                    if (isEarModeEnabled) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.VolumeUp,
-                            contentDescription = "Disable ear mode"
-                        )
-                    } else {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.VolumeOff,
-                            contentDescription = "Enable ear mode"
-                        )
+        modifier = modifier,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    NavigationPill(
+                        text = when {
+                            selectedMode == TuningMode.CHROMATIC -> "Chromatic Mode"
+                            selectedTuning != null -> selectedTuning!!.tuningName
+                            else -> "No tunings found"
+                        },
+                        supportingText = when {
+                            selectedMode == TuningMode.CHROMATIC -> ""
+                            else -> selectedTuning?.instrumentName ?: ""
+                        },
+                        onClick = openSettings
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = openDrawer) {
+                        Icon(Icons.Rounded.Menu, contentDescription = "Open drawer")
+                    }
+                },
+                actions = {
+                    IconToggleButton(
+                        checked = isEarModeEnabled,
+                        onCheckedChange = { isEarModeEnabled = it }
+                    ) {
+                        if (isEarModeEnabled) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.VolumeUp,
+                                contentDescription = "Disable ear mode"
+                            )
+                        } else {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.VolumeOff,
+                                contentDescription = "Enable ear mode"
+                            )
+                        }
                     }
                 }
-            })
-        }) { innerPadding ->
-        // innerPadding accounts for the top bar and system bars so your content doesn't get clipped!
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(top = 48.dp)
@@ -122,104 +127,103 @@ fun TunerScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(
-                visible = !isEarModeEnabled,
-                enter = slideInVertically { -it } + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(),
-                exit = slideOutVertically { -it } + shrinkVertically() + fadeOut(),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+            if (selectedMode == TuningMode.CHROMATIC && selectedTuning == null) {
+                Text(
+                    text = "No tunings found. Please select a tuning."
+                )
+            } else {
+                AnimatedVisibility(
+                    visible = !isEarModeEnabled,
+                    enter = slideInVertically { -it } + expandVertically(
+                        expandFrom = Alignment.Top
+                    ) + fadeIn(),
+                    exit = slideOutVertically { -it } + shrinkVertically() + fadeOut(),
                 ) {
-                    Text(
-                        text = "82,41 Hz", // placeholder
-                        style = MaterialTheme.typography.labelMedium
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "82,41 Hz", // placeholder
+                            style = MaterialTheme.typography.labelMedium
+                        )
 
-                    Box {
-                        // Simple animation to check if the pitch arc works properly
-                        // To be removed later
-                        val infiniteTransition = rememberInfiniteTransition()
-
-                        val cents by infiniteTransition.animateFloat(
-                            initialValue = -50f,
-                            targetValue = 50f,
-                            label = "Cents Animation",
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(durationMillis = 5000, easing = LinearEasing),
-                                repeatMode = RepeatMode.Reverse
+                        Box {
+                            val infiniteTransition = rememberInfiniteTransition()
+                            val cents by infiniteTransition.animateFloat(
+                                initialValue = -50f,
+                                targetValue = 50f,
+                                label = "Cents Animation",
+                                animationSpec = infiniteRepeatable(
+                                    animation = tween(durationMillis = 5000, easing = LinearEasing),
+                                    repeatMode = RepeatMode.Reverse
+                                )
                             )
 
-                        )
+                            PitchArc(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                centsOff = cents
+                            )
 
-                        PitchArc(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp), centsOff = cents
-                        )
-
-                        Text(
-                            modifier = Modifier.align(Alignment.Center), text = "E₂", // placeholder
-                            style = MaterialTheme.typography.displayLargeEmphasized
-                        )
-                    }
-                }
-            }
-
-            if (selectedMode == TuningMode.STANDARD) {
-                var selectedNote by remember { mutableStateOf<String?>(null) }
-
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(top = 32.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        val firstHalf = selectedTuning.sounds.take(
-                            ceil(((selectedTuning.sounds.size + 1) / 2).toDouble()).toInt()
-                        )
-                        items(firstHalf) { item ->
-                            TuningNoteChip(
-                                note = item,
-                                isSelected = selectedNote == item,
-                                onClick = {
-                                    selectedNote = if (selectedNote == item) {
-                                        null
-                                    } else {
-                                        item
-                                    }
-                                }
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = "E₂", // placeholder
+                                style = MaterialTheme.typography.displayLargeEmphasized
                             )
                         }
                     }
+                }
 
-                    LazyColumn(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                if (selectedMode == TuningMode.STANDARD && selectedTuning != null) {
+                    val sounds = selectedTuning!!.sounds
+
+                    var selectedNote by remember { mutableStateOf<Sound?>(null) }
+
+                    val splitIndex = ceil(((sounds.size + 1) / 2).toDouble()).toInt()
+
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 32.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.Top
                     ) {
-                        val secondHalf = selectedTuning.sounds.drop(
-                            ceil(((selectedTuning.sounds.size + 1) / 2).toDouble()).toInt()
-                        )
-                        items(secondHalf) { item ->
-                            TuningNoteChip(
-                                note = item,
-                                isSelected = selectedNote == item,
-                                onClick = {
-                                    selectedNote = if (selectedNote == item) {
-                                        null
-                                    } else {
-                                        item
+                        LazyColumn(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(
+                                items = sounds.take(splitIndex),
+                                key = { it.soundId }
+                            ) { item ->
+                                TuningNoteChip(
+                                    note = item.name,
+                                    isSelected = selectedNote == item,
+                                    onClick = {
+                                        selectedNote = if (selectedNote == item) null else item
                                     }
-                                }
-                            )
+                                )
+                            }
+                        }
+
+                        LazyColumn(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(
+                                items = sounds.drop(splitIndex),
+                                key = { it.soundId }
+                            ) { item ->
+                                TuningNoteChip(
+                                    note = item.name,
+                                    isSelected = selectedNote == item,
+                                    onClick = {
+                                        selectedNote = if (selectedNote == item) null else item
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -227,5 +231,4 @@ fun TunerScreen(
         }
     }
 }
-
 

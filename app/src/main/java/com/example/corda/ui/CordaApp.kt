@@ -39,7 +39,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun CordaApp(
     modifier: Modifier = Modifier,
-    tunerViewModel: TunerViewModel = viewModel()
+    tunerViewModel: TunerViewModel = viewModel(),
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit
 ) {
     // The default screen could be set in settings and later read from shared preferences
     // or something like that, so the user can choose which screen to start with
@@ -177,6 +179,8 @@ fun CordaApp(
                 // and i don't want to implement it right now
                 entry<Screen.Settings> {
                     SettingsScreen(
+                        isDarkMode = isDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
                         onBack = navigateBack
                     )
                 }

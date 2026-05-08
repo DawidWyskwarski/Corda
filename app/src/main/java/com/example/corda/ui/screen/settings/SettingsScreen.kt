@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -66,7 +68,7 @@ fun SettingsScreen(
             SettingsClickableItem(
                 title = "Dark mode",
                 icon = Icons.Outlined.DarkMode,
-                trailingContent = { Switch(checked = false, onCheckedChange = {}) }
+                trailingContent = { Switch(checked = isDarkMode, onCheckedChange = {onToggleDarkMode(it)}) }
             )
 
             SettingsClickableItem(

@@ -67,4 +67,7 @@ dependencies {
 
     // TarsosDSP
     implementation(libs.tarsos.core)
+
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
 }

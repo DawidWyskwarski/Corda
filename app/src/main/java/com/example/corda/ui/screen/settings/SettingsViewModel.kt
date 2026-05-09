@@ -1,16 +1,23 @@
 package com.example.corda.ui.screen.settings
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.corda.data.SettingsManager
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class SettingsViewModel : ViewModel() {
-    var isDarkMode by mutableStateOf(false)
-        private set
+class SettingsViewModel(private val settingsManager: SettingsManager) : ViewModel() {
+    val isDarkMode: StateFlow<Boolean> = settingsManager.isDarkMode.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
 
     fun toggleDarkMode(enabled: Boolean) {
-        isDarkMode = enabled
+        viewModelScope.launch {
+            settingsManager.saveDarkMode(enabled)
+        }
     }
-
 }

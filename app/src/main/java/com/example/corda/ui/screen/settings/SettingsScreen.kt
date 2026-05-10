@@ -213,23 +213,3 @@ fun SettingsDropdown(
         }
     }
 }
-
-/**
- * Komponent dla wartości tekstowej z opcją przejścia (strzałką)
- */
-@Composable
-fun ValueWithArrow(value: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 4.dp)
-        )
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}

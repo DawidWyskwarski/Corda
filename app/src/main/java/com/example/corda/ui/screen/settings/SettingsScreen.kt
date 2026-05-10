@@ -41,10 +41,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.corda.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,10 +64,10 @@ fun SettingsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("App settings", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.settings_title), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
             )
@@ -78,10 +80,10 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             // ------ Display ------
-            SettingsSectionHeader("Display")
+            SettingsSectionHeader(stringResource(R.string.settings_display))
 
             SettingsClickableItem(
-                title = "Dark mode",
+                title = stringResource(R.string.dark_mode),
                 icon = Icons.Outlined.DarkMode,
                 trailingContent = {
                     Switch(
@@ -92,7 +94,7 @@ fun SettingsScreen(
             )
 
             SettingsClickableItem(
-                title = "Keep focus",
+                title = stringResource(R.string.keep_focus),
                 icon = Icons.Outlined.Visibility,
                 trailingContent = {
                     Switch(
@@ -105,37 +107,37 @@ fun SettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ------ Calibration ------
-            SettingsSectionHeader("Calibration")
+            SettingsSectionHeader(stringResource(R.string.settings_calibration))
 
             OutlinedTextField(
                 value = viewModel.frequencyInput,
                 onValueChange = { viewModel.updateFrequency(it) },
-                label = { Text("Base frequency (Hz)") },
+                label = { Text(stringResource(R.string.base_frequency)) },
                 isError = viewModel.isFrequencyError,
                 supportingText = {
-                    if (viewModel.isFrequencyError) Text("Wpisz liczbę od 0 do 1000")
+                    if (viewModel.isFrequencyError) Text(stringResource(R.string.frequency_error))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
-                trailingIcon = { if (viewModel.isFrequencyError) Icon(Icons.Default.Error, "Error", tint = MaterialTheme.colorScheme.error) }
+                trailingIcon = { if (viewModel.isFrequencyError) Icon(Icons.Default.Error, stringResource(R.string.error), tint = MaterialTheme.colorScheme.error) }
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ------ Localisation ------
-            SettingsSectionHeader("Localisation")
+            SettingsSectionHeader(stringResource(R.string.settings_localisation))
 
             SettingsDropdown(
-                label = "Language",
+                label = stringResource(R.string.language),
                 selectedOption = language,
-                options = listOf("English", "Polski"),
+                options = listOf("English", "Polski"), // I think its better to leave language names in their respective languages
                 onOptionSelected = { viewModel.setLanguage(it) }
             )
 
             SettingsDropdown(
-                label = "Notation",
+                label = stringResource(R.string.settings_localisation),
                 selectedOption = notation,
-                options = listOf("European", "American"),
+                options = listOf(stringResource(R.string.european), stringResource(R.string.american)),
                 onOptionSelected = { viewModel.setNotation(it) }
             )
         }

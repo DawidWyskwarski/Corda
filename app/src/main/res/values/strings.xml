@@ -1,3 +1,56 @@
 <resources>
+    <!-- General -->
     <string name="app_name">Corda</string>
+
+    <!-- Descriptions -->
+    <string name="open_drawer">Open drawer</string>
+    <string name="disable_ear_mode">Disable ear mode</string>
+    <string name="enable_ear_mode">Enable ear mode</string>
+    <string name="back">Back</string>
+    <string name="error">Error</string>
+    <string name="clear_search">Clear search</string>
+
+    <!-- Settings -->
+    <string name="settings_title">App settings</string>
+
+    <string name="settings_display">Display</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="keep_focus">Keep focus</string>
+
+    <string name="settings_calibration">Calibration</string>
+    <string name="base_frequency">Base frequency (Hz)</string>
+    <string name="frequency_error">Choose a number between 0 and 1000</string>
+
+    <string name="settings_localisation">Localisation</string>
+    <string name="language">Language</string>
+    <string name="notation">Notation</string>
+    <string name="european">European</string>
+    <string name="american">American</string>
+
+    <!-- Inspirtaion -->
+    <string name="inspiration_title">Inspirations</string>
+
+    <!-- Metronome -->
+    <string name="metronome_title">Metronome</string>
+    <string name="metronome_settings">Metronome settings</string>
+
+    <!-- Tuner -->
+    <string name="chromatic_mode">Chromatic mode</string>
+
+    <string name="guitar_6">Guitar (6-string)</string>
+    <string name="guitar_7">Guitar (7-string)</string>
+    <string name="bass_4">Bass (4-string)</string>
+    <string name="bass_5">Bass (5-string)</string>
+    <string name="ukulele">Ukulele</string>
+
+    <string name="tuner_settings">Tuner Settings</string>
+    <string name="new_custom_tuning">New custom tuning</string>
+    <string name="manage_instruments">Manage Instruments</string>
+    <string name="tuner_mode">Mode</string>
+    <string name="tunings">Tunings</string>
+    <string name="search_tunings">Search tunings</string>
+    <string name="no_tunings">No tunings found.</string>
+    <string name="chromatic_description">Chromatic mode detects the note automatically.</string>
+    <string name="dont_select_tuning">No need to select a tuning.</string>
+
 </resources>

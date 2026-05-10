@@ -41,8 +41,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.R
 import com.example.corda.ui.components.NavigationPill
 import com.example.corda.ui.components.PitchArc
 import com.example.corda.ui.components.TuningNoteChip
@@ -86,7 +88,7 @@ fun TunerScreen(
                     text = if (selectedMode == TuningMode.STANDARD) {
                         selectedTuning.name
                     } else {
-                        "Chromatic Mode"
+                        stringResource(R.string.chromatic_mode)
                     }, supportingText = if (selectedMode == TuningMode.STANDARD) {
                         selectedTuning.instrument
                     } else {
@@ -95,7 +97,7 @@ fun TunerScreen(
                 )
             }, navigationIcon = {
                 IconButton(onClick = openDrawer) {
-                    Icon(Icons.Rounded.Menu, contentDescription = "Open drawer")
+                    Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.open_drawer))
                 }
             }, actions = {
                 IconToggleButton(
@@ -103,12 +105,12 @@ fun TunerScreen(
                     if (isEarModeEnabled) {
                         Icon(
                             Icons.AutoMirrored.Rounded.VolumeUp,
-                            contentDescription = "Disable ear mode"
+                            contentDescription = stringResource(R.string.disable_ear_mode)
                         )
                     } else {
                         Icon(
                             Icons.AutoMirrored.Rounded.VolumeOff,
-                            contentDescription = "Enable ear mode"
+                            contentDescription = stringResource(R.string.enable_ear_mode)
                         )
                     }
                 }

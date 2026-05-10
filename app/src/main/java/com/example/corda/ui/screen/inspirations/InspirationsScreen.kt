@@ -16,6 +16,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.corda.R
 
 /**
  * Screen for the inspirations (currently a skeleton).
@@ -32,7 +34,7 @@ fun InspirationsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar( // TODO add search bar
-                title = { Text("Inspirations") },
+                title = { Text(stringResource(R.string.inspiration_title) ) },
                 navigationIcon = {
                     IconButton(
                         onClick = openDrawer

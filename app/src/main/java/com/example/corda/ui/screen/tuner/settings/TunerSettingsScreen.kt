@@ -49,9 +49,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.R
 import com.example.corda.ui.components.FABMenu
 import com.example.corda.ui.components.FABMenuItem
 import com.example.corda.ui.components.SimpleSingleChoiceButtonGroup
@@ -108,11 +110,11 @@ fun TunerSettingsScreen(
     val fabMenuItems = listOf(
         FABMenuItem(
             Icons.AutoMirrored.Rounded.QueueMusic,
-            "New custom tuning"
+            stringResource(R.string.new_custom_tuning)
         ) { isFabMenuOpen = false },
         FABMenuItem(
             Icons.Rounded.Piano,
-            "Manage Instruments"
+            stringResource(R.string.manage_instruments)
         ) { isFabMenuOpen = false }
     )
 
@@ -123,7 +125,7 @@ fun TunerSettingsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Tuner Settings") },
+                title = { Text(stringResource(R.string.tuner_settings)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
@@ -152,7 +154,7 @@ fun TunerSettingsScreen(
                 .padding(16.dp),
         ) {
             Text(
-                text = "Mode",
+                text = stringResource(R.string.tuner_mode),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -181,7 +183,7 @@ fun TunerSettingsScreen(
                         Column(modifier = Modifier.fillMaxSize()) {
                             Text(
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                text = "Tunings",
+                                text = stringResource(R.string.tunings),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -196,7 +198,7 @@ fun TunerSettingsScreen(
                                         onSearch = { },
                                         expanded = false,
                                         onExpandedChange = { },
-                                        placeholder = { Text("Search tunings") },
+                                        placeholder = { Text(stringResource(R.string.search_tunings)) },
                                         leadingIcon = {
                                             Icon(Icons.Rounded.Search, contentDescription = null)
                                         },
@@ -205,7 +207,7 @@ fun TunerSettingsScreen(
                                                 IconButton(onClick = { searchQuery = "" }) {
                                                     Icon(
                                                         Icons.Rounded.Close,
-                                                        contentDescription = "Clear search"
+                                                        contentDescription = stringResource(R.string.clear_search)
                                                     )
                                                 }
                                             }
@@ -262,7 +264,7 @@ fun TunerSettingsScreen(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = "No tunings found.",
+                                        text = stringResource(R.string.no_tunings),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         textAlign = TextAlign.Center,
@@ -302,11 +304,11 @@ fun TunerSettingsScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Chromatic mode detects the note automatically.",
+                                text = stringResource(R.string.chromatic_description),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                             Text(
-                                text = "No need to select a tuning.",
+                                text = stringResource(R.string.dont_select_tuning),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

@@ -9,6 +9,8 @@ data class TuningWithInstrumentAndSounds (
     @ColumnInfo(name = "tuning_id")
     val tuningId: Int,
     val tuningName: String,
+    @ColumnInfo(name = "instrument_id")
+    val instrumentId: Int,
     val instrumentName: String,
     @ColumnInfo(name = "last_used")
     val lastUsed: Long,

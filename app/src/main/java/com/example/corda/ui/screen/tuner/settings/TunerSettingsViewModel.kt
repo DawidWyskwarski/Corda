@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+data class InstrumentRow(
+    val instrument: Instrument,
+    val tuningCount: Int,
+)
+
 class TunerSettingsViewModel(
     private val repository: TunerRepository
 ) : ViewModel() {
@@ -33,6 +38,22 @@ class TunerSettingsViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+
+    val instrumentRows: StateFlow<List<InstrumentRow>> = combine(
+        instruments,
+        tunings
+    ) { instrumentList, tuningList ->
+        instrumentList.map { instrument ->
+            InstrumentRow(
+                instrument = instrument,
+                tuningCount = tuningList.count { it.instrumentId == instrument.instrumentId }
+            )
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
@@ -71,6 +92,46 @@ class TunerSettingsViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
+
+    fun createInstrument(name: String, stringCount: Int) {
+        val trimmed = name.trim()
+        if (trimmed.isBlank() || stringCount !in 2..24) return
+        viewModelScope.launch {
+            repository.insertInstrument(
+                Instrument(name = trimmed, soundsCount = stringCount.toByte())
+            )
+        }
+    }
+
+    fun updateInstrument(instrument: Instrument, newName: String, newStringCount: Int) {
+        val trimmed = newName.trim()
+        if (trimmed.isBlank() || newStringCount !in 2..24) return
+
+        val tuningCount = tunings.value.count { it.instrumentId == instrument.instrumentId }
+        val updated = if (tuningCount > 0) {
+            instrument.copy(name = trimmed)
+        } else {
+            instrument.copy(name = trimmed, soundsCount = newStringCount.toByte())
+        }
+
+        viewModelScope.launch {
+            repository.updateInstrument(updated)
+            if (_selectedInstrument.value == instrument.name && trimmed != instrument.name) {
+                _selectedInstrument.value = trimmed
+            }
+        }
+    }
+
+    fun deleteInstrument(instrument: Instrument) {
+        val tuningCount = tunings.value.count { it.instrumentId == instrument.instrumentId }
+        if (tuningCount > 0) return
+        viewModelScope.launch {
+            repository.deleteInstrument(instrument)
+            if (_selectedInstrument.value == instrument.name) {
+                _selectedInstrument.value = null
+            }
+        }
+    }
 }
 
 class TunerSettingsViewModelFactory(

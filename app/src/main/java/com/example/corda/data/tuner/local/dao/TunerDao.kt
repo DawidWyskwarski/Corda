@@ -68,6 +68,7 @@ interface TunerDao {
         SELECT 
             Tuning.tuning_id,
             Tuning.name AS tuningName,
+            Instrument.instrument_id,
             Instrument.name AS instrumentName,
             Tuning.last_used
         FROM Tuning
@@ -94,6 +95,7 @@ interface TunerDao {
         SELECT 
             Tuning.tuning_id,
             Tuning.name AS tuningName,
+            Instrument.instrument_id,
             Instrument.name AS instrumentName,
             Tuning.last_used
         FROM Tuning

@@ -50,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.corda.ui.components.FABMenu
 import com.example.corda.ui.components.FABMenuItem
 import com.example.corda.ui.components.FilterChipGroup
+import com.example.corda.ui.components.InstrumentManagementBottomSheet
 import com.example.corda.ui.components.SimpleSingleChoiceButtonGroup
 import com.example.corda.ui.components.TuningListItem
 import com.example.corda.ui.components.UserInfo
@@ -77,6 +78,7 @@ fun TunerSettingsScreen(
     val selectedMode by sharedViewModel.selectedMode.collectAsStateWithLifecycle()
     val modes = remember { TuningMode.entries.toList() }
     var isFabMenuOpen by remember { mutableStateOf(false) }
+    var isInstrumentSheetOpen by remember { mutableStateOf(false) }
 
     val fabMenuItems = remember(onAddTuning) {
         listOf(
@@ -84,7 +86,10 @@ fun TunerSettingsScreen(
                 isFabMenuOpen = false
                 onAddTuning()
             },
-            FABMenuItem(Icons.Rounded.Piano, "Manage Instruments") { isFabMenuOpen = false }
+            FABMenuItem(Icons.Rounded.Piano, "Manage Instruments") {
+                isFabMenuOpen = false
+                isInstrumentSheetOpen = true
+            }
         )
     }
 
@@ -94,7 +99,11 @@ fun TunerSettingsScreen(
     }
 
     BackHandler {
-        if (isFabMenuOpen) isFabMenuOpen = false else navigateBack()
+        when {
+            isInstrumentSheetOpen -> isInstrumentSheetOpen = false
+            isFabMenuOpen -> isFabMenuOpen = false
+            else -> navigateBack()
+        }
     }
 
     Scaffold(
@@ -164,6 +173,13 @@ fun TunerSettingsScreen(
                 }
             }
         }
+    }
+
+    if (isInstrumentSheetOpen) {
+        InstrumentManagementBottomSheet(
+            settingsViewModel = settingsViewModel,
+            onDismiss = { isInstrumentSheetOpen = false },
+        )
     }
 }
 

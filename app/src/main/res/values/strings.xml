@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Corda</string>
+    <string name="instrument_delete_blocked_has_tunings">You can’t delete an instrument while tunings are assigned to it.</string>
 </resources>

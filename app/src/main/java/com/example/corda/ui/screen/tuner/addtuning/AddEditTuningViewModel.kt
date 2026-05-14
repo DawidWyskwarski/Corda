@@ -69,7 +69,7 @@ class AddEditTuningViewModel(
 
     private suspend fun loadExistingTuning(id: Int) {
         val tuning = repository.getTuningWithSoundsById(id) ?: return
-        val instrument = _instruments.value.find { it.name == tuning.instrumentName }
+        val instrument = _instruments.value.find { it.instrumentId == tuning.instrumentId }
         
         _selectedInstrument.value = instrument
         _tuningName.value = tuning.tuningName

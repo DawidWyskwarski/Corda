@@ -41,6 +41,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.ui.components.EarModeChromaticContent
+import com.example.corda.ui.components.EarModeStandardContent
 import com.example.corda.ui.components.NavigationPill
 import com.example.corda.ui.components.PitchArc
 import com.example.corda.ui.components.TuningSoundGrid
@@ -59,7 +61,8 @@ fun TunerScreen(
     val selectedTuning by viewModel.selectedTuning.collectAsStateWithLifecycle()
     val selectedMode by viewModel.selectedMode.collectAsStateWithLifecycle()
     val tunerState by viewModel.tunerUiState.collectAsStateWithLifecycle()
-    var isEarModeEnabled by remember { mutableStateOf(false) }
+    val chromaticSounds = viewModel.chromaticSoundsForEar
+    val isEarModeEnabled = tunerState.isEarModeEnabled
 
     val context = LocalContext.current
     var hasPermission by remember {
@@ -73,17 +76,21 @@ fun TunerScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasPermission = granted
-        if (granted) viewModel.startListening()
     }
 
-    LaunchedEffect(hasPermission) {
+    LaunchedEffect(Unit) {
         if (!hasPermission) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
 
+    LaunchedEffect(hasPermission, isEarModeEnabled) {
+        if (hasPermission && !isEarModeEnabled) {
+            viewModel.startListening()
+        }
+    }
+
     DisposableEffect(Unit) {
-        if (hasPermission) viewModel.startListening()
         onDispose { viewModel.stopListening() }
     }
 
@@ -113,7 +120,7 @@ fun TunerScreen(
                 actions = {
                     IconToggleButton(
                         checked = isEarModeEnabled,
-                        onCheckedChange = { isEarModeEnabled = it },
+                        onCheckedChange = { viewModel.setEarModeEnabled(it) },
                         enabled = !(selectedMode == TuningMode.STANDARD && selectedTuning == null)
                     ) {
                         Icon(
@@ -173,19 +180,46 @@ fun TunerScreen(
                         }
                     }
 
-                    if (selectedMode == TuningMode.STANDARD && selectedTuning != null) {
-                        val highlightedIndex = tunerState.focusedSoundIndex
-                            ?: tunerState.autoSelectedSoundIndex
+                    when {
+                        isEarModeEnabled && selectedMode == TuningMode.STANDARD && selectedTuning != null -> {
+                            EarModeStandardContent(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 16.dp),
+                                sounds = selectedTuning!!.sounds,
+                                playingIndex = tunerState.earPlayingStandardIndex,
+                                onNoteToggle = { viewModel.onEarModeStandardNoteToggled(it) },
+                            )
+                        }
 
-                        TuningSoundGrid(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 16.dp),
-                            sounds = selectedTuning!!.sounds,
-                            selectedIndex = highlightedIndex,
-                            onIndexSelected = { viewModel.onNoteChipClicked(it) },
-                            tunedIndices = tunerState.tunedSoundIndices,
-                        )
+                        isEarModeEnabled && selectedMode == TuningMode.CHROMATIC -> {
+                            val selectedChromatic =
+                                tunerState.earSelectedChromaticSound ?: chromaticSounds.first()
+                            EarModeChromaticContent(
+                                modifier = Modifier
+                                    .weight(1f),
+                                allNotes = chromaticSounds,
+                                selectedNote = selectedChromatic,
+                                isPlaying = tunerState.isPlayingChromaticNote,
+                                onNoteSelected = { viewModel.onEarChromaticSoundSelected(it) },
+                                onPlayToggle = { viewModel.toggleChromaticPlayback() },
+                            )
+                        }
+
+                        selectedMode == TuningMode.STANDARD && selectedTuning != null -> {
+                            val highlightedIndex = tunerState.focusedSoundIndex
+                                ?: tunerState.autoSelectedSoundIndex
+
+                            TuningSoundGrid(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 16.dp),
+                                sounds = selectedTuning!!.sounds,
+                                selectedIndex = highlightedIndex,
+                                onIndexSelected = { viewModel.onNoteChipClicked(it) },
+                                tunedIndices = tunerState.tunedSoundIndices,
+                            )
+                        }
                     }
                 }
             }

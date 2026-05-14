@@ -59,7 +59,7 @@ fun AddEditTuningScreen(
     }
 
     val isEditMode = viewModel.isEditMode
-    val title = if (isEditMode) "Edit instrument" else "Add instrument"
+    val title = if (isEditMode) "Edit tuning" else "Add tuning"
     val actionLabel = if (isEditMode) "Save" else "Add"
 
     Scaffold(

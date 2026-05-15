@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.corda.R
+import com.example.corda.ui.theme.normalizeLanguageTag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -18,7 +19,6 @@ class SettingsManager(context: Context) {
     * */
     private val settingsDataStore = context.dataStore
 
-    val defaultLanguage = context.getString(R.string.language_english)
     val defaultNotation = context.getString(R.string.european)
 
     private object Keys {
@@ -32,7 +32,9 @@ class SettingsManager(context: Context) {
     val isDarkMode: Flow<Boolean> = settingsDataStore.data.map { it[Keys.DARK_MODE] ?: false }
     val keepFocus: Flow<Boolean> = settingsDataStore.data.map { it[Keys.KEEP_FOCUS] ?: true }
     val baseFrequency: Flow<Int> = settingsDataStore.data.map { it[Keys.BASE_FREQUENCY] ?: 440 }
-    val language: Flow<String> = settingsDataStore.data.map { it[Keys.LANGUAGE] ?: defaultLanguage }
+    val language: Flow<String> = settingsDataStore.data.map {
+        normalizeLanguageTag(it[Keys.LANGUAGE])
+    }
     val notation: Flow<String> = settingsDataStore.data.map { it[Keys.NOTATION] ?: defaultNotation }
 
     suspend fun saveDarkMode(enabled: Boolean) = settingsDataStore.edit { it[Keys.DARK_MODE] = enabled }

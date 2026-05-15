@@ -81,7 +81,10 @@ fun TunerScreen(
     // We use the Scaffold to handle the heavy lifting of Material Design layout,
     // like placing the TopAppBar and managing window insets.
     Scaffold(
-        modifier = modifier, topBar = {
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = {
             CenterAlignedTopAppBar(title = {
                 // Custom component for the tuning selection
                 NavigationPill(

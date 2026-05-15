@@ -6,15 +6,27 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.corda.data.SettingsManager
+import com.example.corda.ui.theme.LANGUAGE_EN
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val settingsManager: SettingsManager) : ViewModel() {
-    val isDarkMode = settingsManager.isDarkMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+class SettingsViewModel(
+    private val settingsManager: SettingsManager,
+    initialDarkMode: Boolean = false,
+) : ViewModel() {
+    val isDarkMode = settingsManager.isDarkMode.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        initialDarkMode,
+    )
     val keepFocus = settingsManager.keepFocus.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
-    val language = settingsManager.language.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), settingsManager.defaultLanguage)
+    val language = settingsManager.language.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        LANGUAGE_EN,
+    )
     val notation = settingsManager.notation.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), settingsManager.defaultNotation)
 
     var frequencyInput by mutableStateOf("")

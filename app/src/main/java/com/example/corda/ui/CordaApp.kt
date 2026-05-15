@@ -1,6 +1,10 @@
 package com.example.corda.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -133,9 +137,11 @@ fun CordaApp(
             )
         }
     ) {
-        // Composable that renders the current screen based on the backstack.
-        // entryProvider maps the Screen data object/class to a Composable function.
-        // For more information check out the Navigation3 documentation.
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
         NavDisplay(
             backStack = backStack,
             onBack = navigateBack,
@@ -190,5 +196,6 @@ fun CordaApp(
                 }
             }
         )
+        }
     }
 }

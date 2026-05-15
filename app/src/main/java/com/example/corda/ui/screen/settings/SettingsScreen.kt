@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -40,6 +39,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.corda.R
+import com.example.corda.ui.theme.LANGUAGE_EN
+import com.example.corda.ui.theme.LANGUAGE_PL
+
+private val screenPadding = 16.dp
+private val dividerPadding = Modifier.padding(vertical = 8.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,12 +53,12 @@ fun SettingsScreen(
     onBack: () -> Unit
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
-    val keepFocus by viewModel.keepFocus.collectAsStateWithLifecycle()
-    val language by viewModel.language.collectAsStateWithLifecycle()
-    val notation by viewModel.notation.collectAsStateWithLifecycle()
+    val languageTag by viewModel.language.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.settings), fontWeight = FontWeight.SemiBold) },
@@ -69,10 +73,10 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(horizontal = screenPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // ------ Display ------
             SettingsSectionHeader(stringResource(R.string.settings_display))
 
             SettingsClickableItem(
@@ -86,20 +90,19 @@ fun SettingsScreen(
                 }
             )
 
-            SettingsClickableItem(
-                title = stringResource(R.string.keep_focus),
-                icon = Icons.Outlined.Visibility,
-                trailingContent = {
-                    Switch(
-                        checked = keepFocus,
-                        onCheckedChange = { viewModel.toggleKeepFocus(it) }
-                    )
-                }
-            )
+//            SettingsClickableItem(
+//                title = stringResource(R.string.keep_focus),
+//                icon = Icons.Outlined.Visibility,
+//                trailingContent = {
+//                    Switch(
+//                        checked = keepFocus,
+//                        onCheckedChange = { viewModel.toggleKeepFocus(it) }
+//                    )
+//                }
+//            )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = dividerPadding)
 
-            // ------ Calibration ------
             SettingsSectionHeader(stringResource(R.string.settings_calibration))
 
             OutlinedTextField(
@@ -112,47 +115,46 @@ fun SettingsScreen(
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
-                trailingIcon = { if (viewModel.isFrequencyError) Icon(Icons.Default.Error, stringResource(R.string.error), tint = MaterialTheme.colorScheme.error) }
+                trailingIcon = {
+                    if (viewModel.isFrequencyError) {
+                        Icon(
+                            Icons.Default.Error,
+                            stringResource(R.string.error),
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = dividerPadding)
 
-            // ------ Localisation ------
             SettingsSectionHeader(stringResource(R.string.settings_localisation))
 
-            SettingsDropdown(
-                label = stringResource(R.string.language),
-                selectedOption = language,
-                options = listOf(stringResource(R.string.language_english), stringResource(R.string.language_polish)),
-                onOptionSelected = { viewModel.setLanguage(it) }
+            SettingsLanguageDropdown(
+                selectedLanguageTag = languageTag,
+                onLanguageSelected = { viewModel.setLanguage(it) },
             )
 
-            SettingsDropdown(
-                label = stringResource(R.string.notation),
-                selectedOption = notation,
-                options = listOf(stringResource(R.string.european), stringResource(R.string.american)),
-                onOptionSelected = { viewModel.setNotation(it) }
-            )
+//            SettingsDropdown(
+//                label = stringResource(R.string.notation),
+//                selectedOption = notation,
+//                options = listOf(stringResource(R.string.european), stringResource(R.string.american)),
+//                onOptionSelected = { viewModel.setNotation(it) }
+//            )
         }
     }
 }
 
-/**
- * Pomocniczy komponent dla nagłówka sekcji
- */
 @Composable
 fun SettingsSectionHeader(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
+        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
     )
 }
 
-/**
- * Generyczny komponent rzędu ustawień
- */
 @Composable
 fun SettingsClickableItem(
     title: String,
@@ -162,8 +164,58 @@ fun SettingsClickableItem(
     ListItem(
         headlineContent = { Text(title, fontSize = 16.sp) },
         leadingContent = { Icon(icon, contentDescription = null) },
-        trailingContent = trailingContent
+        trailingContent = trailingContent,
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsLanguageDropdown(
+    selectedLanguageTag: String,
+    onLanguageSelected: (String) -> Unit,
+) {
+    val options = remember {
+        listOf(
+            LANGUAGE_EN to R.string.language_english,
+            LANGUAGE_PL to R.string.language_polish,
+        )
+    }
+    var expanded by remember { mutableStateOf(false) }
+    val selectedLabel = stringResource(
+        options.first { it.first == selectedLanguageTag }.second,
+    )
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        OutlinedTextField(
+            value = selectedLabel,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.language)) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            options.forEach { (tag, labelRes) ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(labelRes)) },
+                    onClick = {
+                        onLanguageSelected(tag)
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

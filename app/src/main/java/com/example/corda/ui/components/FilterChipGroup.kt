@@ -10,7 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.corda.R
 
 @Composable
 fun FilterChipGroup(
@@ -30,7 +32,7 @@ fun FilterChipGroup(
             FilterChip(
                 selected = selectedItem == null,
                 onClick = { onItemSelected(null) },
-                label = { Text("All") },
+                label = { Text(stringResource(R.string.all)) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,

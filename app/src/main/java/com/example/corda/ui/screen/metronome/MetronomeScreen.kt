@@ -10,11 +10,14 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.corda.R
 
 /**
  * Screen for the metronome (currently a skeleton).
@@ -31,6 +34,8 @@ fun MetronomeScreen(
 ) {
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -39,7 +44,7 @@ fun MetronomeScreen(
                             .clickable(
                                 onClick = openSettings
                             ),
-                        text = "Metronome"
+                        text = stringResource(R.string.metronome)
                     )
                 },
                 navigationIcon = {

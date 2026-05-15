@@ -1,9 +1,16 @@
 package com.example.corda.ui
 
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import com.example.corda.ui.util.findComponentActivity
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -24,6 +31,7 @@ import com.example.corda.ui.navigation.utilityEntries
 @Composable
 fun CordaApp(
     modifier: Modifier = Modifier,
+    activity: ComponentActivity,
 ) {
     val appState = rememberCordaAppState()
 
@@ -41,31 +49,39 @@ fun CordaApp(
             )
         }
     ) {
-        NavDisplay(
-            backStack = appState.backStack,
-            onBack = appState::navigateBack,
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator()
-            ),
-            entryProvider = entryProvider {
-                tunerEntries(
-                    openDrawer = appState::openDrawer,
-                    navigateTo = appState::navigateTo,
-                    navigateBack = appState::navigateBack,
-                )
-                metronomeEntries(
-                    openDrawer = appState::openDrawer,
-                    navigateTo = appState::navigateTo,
-                    navigateBack = appState::navigateBack
-                )
-                inspirationsEntries(
-                    openDrawer = appState::openDrawer
-                )
-                utilityEntries(
-                    navigateBack = appState::navigateBack
-                )
-            }
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            NavDisplay(
+                backStack = appState.backStack,
+                onBack = appState::navigateBack,
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                ),
+                entryProvider = entryProvider {
+                    tunerEntries(
+                        activity = activity,
+                        openDrawer = appState::openDrawer,
+                        navigateTo = appState::navigateTo,
+                        navigateBack = appState::navigateBack,
+                    )
+                    metronomeEntries(
+                        openDrawer = appState::openDrawer,
+                        navigateTo = appState::navigateTo,
+                        navigateBack = appState::navigateBack
+                    )
+                    inspirationsEntries(
+                        openDrawer = appState::openDrawer
+                    )
+                    utilityEntries(
+                        activity = activity,
+                        navigateBack = appState::navigateBack,
+                    )
+                }
+            )
+        }
     }
 }

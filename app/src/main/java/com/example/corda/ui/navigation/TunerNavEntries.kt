@@ -1,8 +1,6 @@
 package com.example.corda.ui.navigation
 
-import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import com.example.corda.ui.screen.tuner.TunerScreen
@@ -12,15 +10,13 @@ import com.example.corda.ui.screen.tuner.addtuning.AddEditTuningViewModel
 import com.example.corda.ui.screen.tuner.settings.TunerSettingsScreen
 import com.example.corda.ui.screen.tuner.settings.TunerSettingsViewModel
 
-@SuppressLint("ContextCastToActivity")
 fun EntryProviderScope<Screen>.tunerEntries(
+    activity: ComponentActivity,
     openDrawer: () -> Unit,
     navigateTo: (Screen) -> Unit,
     navigateBack: () -> Unit,
 ) {
     entry<Screen.Tuner> {
-        val activity = LocalContext.current as ComponentActivity
-
         // Activity-scoped so Tuner and TunerSettings share one TunerViewModel (selected tuning, mode).
         val tunerViewModel: TunerViewModel = hiltViewModel(viewModelStoreOwner = activity)
 
@@ -31,8 +27,6 @@ fun EntryProviderScope<Screen>.tunerEntries(
         )
     }
     entry<Screen.TunerSettings> {
-        val activity = LocalContext.current as ComponentActivity
-
         // Same activity store as Tuner so selection/mode survive navigating to settings and back.
         val tunerViewModel: TunerViewModel = hiltViewModel(viewModelStoreOwner = activity)
 

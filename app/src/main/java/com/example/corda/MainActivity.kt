@@ -1,23 +1,76 @@
 package com.example.corda
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.data.SettingsManager
 import com.example.corda.ui.CordaApp
 import com.example.corda.ui.theme.CordaTheme
+import com.example.corda.ui.theme.LANGUAGE_EN
+import com.example.corda.ui.theme.ProvideAppLocale
+import com.example.corda.ui.theme.applyWindowTheme
+import com.example.corda.ui.theme.backgroundDark
+import com.example.corda.ui.theme.backgroundLight
+import com.example.corda.ui.util.findComponentActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var settingsManager: SettingsManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val initialDark = runBlocking { settingsManager.isDarkMode.first() }
+
+        applyWindowTheme(this, initialDark)
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = backgroundLight.toArgb(),
+                darkScrim = backgroundDark.toArgb(),
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                lightScrim = android.graphics.Color.TRANSPARENT,
+                darkScrim = android.graphics.Color.TRANSPARENT,
+            ),
+        )
 
         setContent {
-            CordaTheme {
-                CordaApp()
+            val activity = checkNotNull(LocalContext.current.findComponentActivity())
+            val isDark by settingsManager.isDarkMode.collectAsStateWithLifecycle(initialValue = initialDark)
+            val keepFocus by settingsManager.keepFocus.collectAsStateWithLifecycle(initialValue = true)
+            val languageTag by settingsManager.language.collectAsStateWithLifecycle(initialValue = LANGUAGE_EN)
+
+            LaunchedEffect(keepFocus) {
+                if (keepFocus) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+
+            LaunchedEffect(languageTag) {
+                Locale.setDefault(Locale.forLanguageTag(languageTag))
+            }
+
+            ProvideAppLocale(languageTag = languageTag) {
+                CordaTheme(darkTheme = isDark) {
+                    CordaApp(activity = activity)
+                }
             }
         }
     }

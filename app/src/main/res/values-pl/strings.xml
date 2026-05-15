@@ -1,0 +1,72 @@
+<resources>
+    <!-- General -->
+    <string name="app_name">Corda</string>
+
+    <!-- Descriptions / labels -->
+    <string name="selected_text">Wybrane</string>
+    <string name="open_drawer">Otwórz menu?</string>
+    <string name="disable_ear_mode">Wyłącz tryb ucha?</string>
+    <string name="enable_ear_mode">Włącz tryb ucha</string>
+    <string name="back">Powrót</string>
+    <string name="error">Błąd</string>
+
+    <!-- FAB Menu -->
+    <string name="tools">Narzędzia</string>
+    <string name="toggle_menu">Przełącz menu</string>
+    <string name="close_menu">Zamknij menu</string>
+    <string name="expanded">Rozwinięte</string>
+    <string name="collapsed">Zwinięte</string>
+
+    <!-- Settings -->
+    <string name="clear_search">Wyczyść wyszukiwania</string>
+    <string name="all">Wszystkie</string>
+
+    <string name="settings_display">Wyświetlanie</string>
+    <string name="dark_mode">Tryb nocny</string>
+    <string name="keep_focus">Tryb skupienia</string>
+
+    <string name="settings_calibration">Kalibracja</string>
+    <string name="base_frequency">Bazowa częstotliwość (Hz)</string>
+    <string name="frequency_error">Wybierz liczbę pomiędzy 1 a 1000</string>
+
+    <string name="settings_localisation">Lokalizacja</string>
+    <string name="language">Język</string>
+    <string name="language_english">English</string>
+    <string name="language_polish">Polski</string>
+
+    <string name="notation">Notacja</string>
+    <string name="european">Europejska</string>
+    <string name="american">Amerykańska</string>
+
+    <!-- Inspirtaion -->
+
+    <!-- Metronome -->
+    <string name="metronome_settings">Ustawienia metronomu</string>
+
+    <!-- Tuner -->
+    <string name="chromatic_mode">Tryb chromatyczny</string>
+    <string name="guitar_6">Gitara (6 strun)</string>
+    <string name="guitar_7">Gitara (7 strun)</string>
+    <string name="bass_4">Bas (4 struny)</string>
+    <string name="bass_5">Bas (5 strun)</string>
+    <string name="ukulele">Ukulele</string>
+    <string name="tuner_settings">Ustawienia stroika?</string>
+    <string name="manage_instruments">Zarządzaj instrumentami</string>
+    <string name="tuner_mode">Tryb</string>
+    <string name="tunings">Stroje</string>
+    <string name="search_tunings">Wyszukaj stroje</string>
+    <string name="no_tunings">Nie znaleziono strojów.</string>
+    <string name="chromatic_description">Tryb chromatyczny automatycznie wykrywa nutę.</string>
+    <string name="dont_select_tuning">Nie ma potrzeby wybierać stroju.</string>
+    <string name="new_custom_tuning">Nowy własny strój</string>
+    <string name="tuner">Stroik</string>
+    <string name="metronome">Metronom</string>
+    <string name="inspirations">Inspiracje</string>
+    <string name="settings">Ustawienia</string>
+    <string name="help_feedback">Pomoc i feedback</string>
+    <string name="play_something">Zagraj coś</string>
+    <string name="tune_higher">Stroj wyżej?</string>
+    <string name="tune_lower">Stroj niżej?</string>
+    <string name="perfect">Idealnie</string>
+
+</resources>

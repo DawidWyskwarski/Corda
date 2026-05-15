@@ -16,7 +16,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.corda.R
+import com.example.corda.ui.theme.LocalCordaColors
 import kotlin.math.abs
 
 @Composable
@@ -24,16 +27,17 @@ fun PitchArc(
     modifier: Modifier = Modifier,
     centsOff: Float?,
 ) {
+    val cordaColors = LocalCordaColors.current
     val trackColor = MaterialTheme.colorScheme.primaryContainer
     val targetZoneColor = if (abs(centsOff ?: 6f) > 5) {
         MaterialTheme.colorScheme.inversePrimary
     } else {
-        Color(0xFF64F46F)
+        cordaColors.tunerInTuneBright
     }
 
     val indicatorColor = if (centsOff != null) {
         if (abs(centsOff) < 5f) {
-            Color(0xFF35CD3D)
+            cordaColors.tunerInTune
         } else {
             MaterialTheme.colorScheme.error.copy(alpha = 0.9f)
         }
@@ -115,11 +119,11 @@ fun PitchArc(
             Text(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(top = 64.dp),
-                text = if (centsOff == null) "Play something"
-                else if (centsOff < -5f) "Tune higher"
-                else if (centsOff > 5f) "Tune lower"
-                else "Perfect",
+                    .padding(top=64.dp),
+                text = if (centsOff == null) stringResource(R.string.play_something)
+                else if (centsOff < -5f) stringResource(R.string.tune_higher)
+                else if (centsOff > 5f) stringResource(R.string.tune_lower)
+                else stringResource(R.string.perfect),
                 style = MaterialTheme.typography.titleLarge,
             )
         }

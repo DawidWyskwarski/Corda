@@ -38,17 +38,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.corda.R
+import com.example.corda.domain.tuner.TuningMode
 import com.example.corda.ui.components.NavigationPill
 import com.example.corda.ui.components.UserInfo
 import com.example.corda.ui.screen.tuner.components.EarModeChromaticContent
 import com.example.corda.ui.screen.tuner.components.EarModeStandardContent
 import com.example.corda.ui.screen.tuner.components.PitchArc
 import com.example.corda.ui.screen.tuner.components.TuningSoundGrid
-import com.example.corda.domain.tuner.TuningMode
-import com.example.corda.ui.screen.tuner.components.NoteLabel
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +103,7 @@ fun TunerScreen(
                 title = {
                     NavigationPill(
                         text = when {
-                            selectedMode == TuningMode.CHROMATIC -> "Chromatic Mode"
+                            selectedMode == TuningMode.CHROMATIC -> stringResource(R.string.chromatic_mode)
                             selectedTuning != null -> selectedTuning!!.tuningName
                             else -> "No tunings found"
                         },
@@ -115,7 +116,7 @@ fun TunerScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
-                        Icon(Icons.Rounded.Menu, contentDescription = "Open drawer")
+                        Icon(Icons.Rounded.Menu, stringResource(R.string.open_drawer))
                     }
                 },
                 actions = {
@@ -127,8 +128,8 @@ fun TunerScreen(
                         Icon(
                             imageVector = if (isEarModeEnabled) Icons.AutoMirrored.Rounded.VolumeUp
                             else Icons.AutoMirrored.Rounded.VolumeOff,
-                            contentDescription = if (isEarModeEnabled) "Disable ear mode"
-                            else "Enable ear mode",
+                            contentDescription = if (isEarModeEnabled) stringResource(R.string.disable_ear_mode)
+                            else stringResource(R.string.enable_ear_mode),
                         )
                     }
                 }

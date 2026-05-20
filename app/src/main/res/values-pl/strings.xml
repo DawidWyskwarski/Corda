@@ -83,6 +83,7 @@
     <string name="chromatic_description">Tryb chromatyczny automatycznie wykrywa nutę.</string>
     <string name="dont_select_tuning">Nie ma potrzeby wybierać stroju.</string>
     <string name="new_custom_tuning">Nowy własny strój</string>
+    <string name="instrument_delete_blocked_has_tunings">Nie można usunąc instrumentu z przydielonymi strojami.</string>
     <string name="tuner">Stroik</string>
     <string name="metronome">Metronom</string>
     <string name="inspirations">Inspiracje</string>

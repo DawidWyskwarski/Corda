@@ -66,6 +66,14 @@
 
     <!-- Metronome -->
     <string name="metronome_settings">Ustawienia metronomu</string>
+    <string name="metronome_start">START</string>
+    <string name="metronome_beats_in_a_bar">Uderzeń w takcie</string>
+    <string name="metronome_muting_options">Opcje wyciszania</string>
+    <string name="metronome_play">Graj</string>
+    <string name="metronome_mute">Wycisz</string>
+    <string name="metronome_beats_label">%1$d uderzeń</string>
+    <string name="metronome_pill_muting_label">Graj %1$d Wycisz %2$d</string>
+    <string name="metronome_active_muting_label">Graj %1$d takt wycisz %2$d</string>
 
     <!-- Tuner -->
     <string name="chromatic_mode">Tryb chromatyczny</string>

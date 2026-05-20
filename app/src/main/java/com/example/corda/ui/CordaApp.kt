@@ -67,9 +67,10 @@ fun CordaApp(
                         navigateBack = appState::navigateBack,
                     )
                     metronomeEntries(
+                        activity = activity,
                         openDrawer = appState::openDrawer,
                         navigateTo = appState::navigateTo,
-                        navigateBack = appState::navigateBack
+                        navigateBack = appState::navigateBack,
                     )
                     inspirationsEntries(
                         openDrawer = appState::openDrawer,

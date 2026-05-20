@@ -81,6 +81,14 @@
 
     <!-- Metronome -->
     <string name="metronome_settings">Metronome settings</string>
+    <string name="metronome_start">START</string>
+    <string name="metronome_beats_in_a_bar">Beats in a Bar</string>
+    <string name="metronome_muting_options">Muting options</string>
+    <string name="metronome_play">Play</string>
+    <string name="metronome_mute">Mute</string>
+    <string name="metronome_beats_label">%1$d Beats</string>
+    <string name="metronome_pill_muting_label">Play %1$d Mute %2$d</string>
+    <string name="metronome_active_muting_label">Play %1$d bar mute %2$d</string>
 
     <!-- Tuner -->
     <string name="chromatic_mode">Chromatic mode</string>

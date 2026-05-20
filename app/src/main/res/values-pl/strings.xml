@@ -42,6 +42,8 @@
     <string name="search_inspirations">Szukaj inspiracji</string>
     <string name="new_inspiration">Nowa inspiracja</string>
     <string name="manage_labels">Zarządzaj etykietami</string>
+    <string name="show_filters">Pokaż filtry</string>
+    <string name="hide_filters">Ukryj filtry</string>
     <string name="inspiration_description">Opis</string>
     <string name="inspiration_additional_attributes">Dodatkowe atrybuty</string>
     <string name="inspiration_name_hint">Nazwa</string>

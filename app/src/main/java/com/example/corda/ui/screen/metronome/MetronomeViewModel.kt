@@ -95,7 +95,6 @@ class MetronomeViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        super.onCleared()
         timerJob?.cancel()
         audioPlayer.release()
     }

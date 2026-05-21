@@ -24,11 +24,15 @@ fun ProvideAppLocale(
 ) {
     val baseContext = LocalContext.current
     val configuration = LocalConfiguration.current
+
+    // Setting the localisation to new language
     val localizedConfiguration = remember(languageTag) {
         Configuration(configuration).apply {
             setLocale(Locale.forLanguageTag(languageTag))
         }
     }
+
+    // Creating context which uses resources appropriate for the localisation
     val localizedContext = remember(languageTag) {
         val confContext = baseContext.createConfigurationContext(localizedConfiguration)
         object : ContextWrapper(baseContext) {
@@ -37,6 +41,7 @@ fun ProvideAppLocale(
         }
     }
 
+    // Overriding LocalContext and LocalConfiguration for the subtree
     CompositionLocalProvider(
         LocalContext provides localizedContext,
         LocalConfiguration provides localizedConfiguration,

@@ -255,7 +255,7 @@ val unspecified_scheme = ColorFamily(
 
 @Composable
 fun CordaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean,
     dynamicColor: Boolean = true,
     content: @Composable() () -> Unit
 ) {
@@ -269,6 +269,7 @@ fun CordaTheme(
       else -> lightScheme
   }
 
+  // These colors arent part of the predefined themes, so we define them here
   val cordaColors = if (darkTheme) {
     CordaExtraColors(
       tunerInTune = tunerInTuneDark,
@@ -281,6 +282,7 @@ fun CordaTheme(
     )
   }
 
+  // Adjusting icons to the theme (otherwise top bar icons are invisible)
   SystemUiEffect(darkTheme = darkTheme, backgroundColor = colorScheme.background)
 
   CompositionLocalProvider(LocalCordaColors provides cordaColors) {

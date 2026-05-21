@@ -82,17 +82,6 @@ fun SettingsScreen(
                 }
             )
 
-//            SettingsClickableItem(
-//                title = stringResource(R.string.keep_focus),
-//                icon = Icons.Outlined.Visibility,
-//                trailingContent = {
-//                    Switch(
-//                        checked = keepFocus,
-//                        onCheckedChange = { viewModel.toggleKeepFocus(it) }
-//                    )
-//                }
-//            )
-
             HorizontalDivider(modifier = dividerPadding)
 
             SettingsSectionHeader(stringResource(R.string.settings_calibration))
@@ -126,13 +115,6 @@ fun SettingsScreen(
                 selectedLanguageTag = languageTag,
                 onLanguageSelected = { viewModel.setLanguage(it) },
             )
-
-//            SettingsDropdown(
-//                label = stringResource(R.string.notation),
-//                selectedOption = notation,
-//                options = listOf(stringResource(R.string.european), stringResource(R.string.american)),
-//                onOptionSelected = { viewModel.setNotation(it) }
-//            )
         }
     }
 }

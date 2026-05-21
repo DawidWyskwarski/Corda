@@ -49,10 +49,8 @@ fun LabelManagementBottomSheet(
     onDismiss: () -> Unit,
     viewModel: InspirationsViewModel = hiltViewModel()
 ) {
-    // Capture the localized context here — inside ProvideAppLocale, so resources are correct.
-    // We use localizedContext.resources.getString() in dialogs instead of stringResource(),
-    // because AlertDialog creates a separate Android window that doesn't reliably inherit
-    // the Compose CompositionLocal overrides.
+    // Capture the localized context here, inside ProvideAppLocale, so resources are correct.
+    // We use localizedContext.resources.getString() in dialogs instead of stringResource(), because AlertDialog creates a separate Android window that doesn't reliably inherit the Compose CompositionLocal overrides.
     val localizedContext = LocalContext.current
 
     val state by viewModel.listState.collectAsStateWithLifecycle()

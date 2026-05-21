@@ -73,11 +73,6 @@ fun DrawerMenuContent(
                 icon = Icons.Rounded.Settings,
                 labelRes = R.string.settings,
                 screen = Screen.Settings
-            ),
-            NavigationItem(
-                icon = Icons.AutoMirrored.Rounded.Help,
-                labelRes = R.string.help_feedback,
-                screen = Screen.Help
             )
         )
     }

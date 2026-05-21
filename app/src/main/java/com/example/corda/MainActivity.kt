@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Blocking the thread until value is retrieved - avoiding a flash
         val initialDark = runBlocking { settingsManager.isDarkMode.first() }
 
         applyWindowTheme(this, initialDark)

@@ -64,6 +64,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.corda.R
+import com.example.corda.ui.components.NavigationPill
 import kotlinx.coroutines.launch
 
 @Composable
@@ -115,7 +116,18 @@ private fun InactiveMetronomeScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    SettingsPill(state = state, onClick = openSettings)
+                    NavigationPill(
+                        text = stringResource(R.string.metronome_beats_label, state.beatsPerBar),
+                        supportingText = when {
+                            state.mutingEnabled -> stringResource(
+                                R.string.metronome_pill_muting_label,
+                                state.playBars,
+                                state.muteBars,
+                            )
+                            else -> ""
+                        },
+                        onClick = openSettings
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
@@ -279,57 +291,6 @@ private fun ActiveMetronomeScreen(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun SettingsPill(
-    state: MetronomeUiState,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val containerColor = MaterialTheme.colorScheme.primaryContainer
-    val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-
-    Box(
-        modifier = modifier
-            .widthIn(min = 180.dp)
-            .clip(RoundedCornerShape(50))
-            .background(containerColor)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(end = 6.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.metronome_beats_label, state.beatsPerBar),
-                    color = contentColor,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                )
-                if (state.mutingEnabled) {
-                    Text(
-                        text = stringResource(
-                            R.string.metronome_pill_muting_label,
-                            state.playBars,
-                            state.muteBars,
-                        ),
-                        color = contentColor,
-                        fontSize = 12.sp,
-                    )
-                }
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
-                contentDescription = null,
-                tint = contentColor,
-                modifier = Modifier.size(14.dp),
-            )
         }
     }
 }
